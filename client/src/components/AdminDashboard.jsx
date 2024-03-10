@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 import UploadModal from './UploadModal';
 
-const AdminDashboard = () => {
+const AdminDashboard = ({host}) => {
     const [users, setUsers] = useState([]);
     const [searchEmail, setSearchEmail] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +15,7 @@ const AdminDashboard = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/users');
+            const response = await axios.get(`${host}/users`);
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -97,6 +97,9 @@ const AdminDashboard = () => {
                     <button onClick={exportToExcel} className="bg-green-500 text-white px-4 py-2 rounded">Export to Excel</button>
                 </div>
             </div>
+            {
+                users ? 
+            
             <table className="w-full border-collapse border border-gray-400">
                 <thead>
                     <tr className="bg-gray-200">
@@ -129,6 +132,15 @@ const AdminDashboard = () => {
                     ))}
                 </tbody>
             </table>
+            : 
+            <div
+                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-[#EC7003] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                role="status">
+                <span
+                  className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+                >Loading...</span>
+              </div>
+            }
             <UploadModal
                 isOpen={isModalOpen}
                 onClose={closeModal}

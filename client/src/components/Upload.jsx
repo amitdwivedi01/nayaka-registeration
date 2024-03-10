@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import bgimage from "../assets/WEB-02.jpg";
 import bgimage2 from "../assets/WEB-01.jpg";
 import { useNavigate } from 'react-router-dom';
 
-const Upload = () => {
+const Upload = ({host}) => {
   const [photo, setPhoto] = useState(null);
   const [frontImage, setFrontImage] = useState(null);
   const [backImage, setBackImage] = useState(null);
@@ -12,6 +12,13 @@ const Upload = () => {
   const [passport, setPassport] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    const newlogin = localStorage.getItem("login");
+    if(newlogin === 'true'){
+        navigate('/')
+    }
+  },[])
 
   const handleFileChange = (e, setImage) => {
     const file = e.target.files[0];
@@ -64,8 +71,9 @@ const Upload = () => {
             passport: passportdoc,
         }
     try{
-        const response = await axios.post("http://localhost:5000/upload", data);
+        const response = await axios.post(`${host}/upload`, data);
         if (response.status === 201) {
+            localStorage.setItem("login", 'true');
             setIsLoading(false);
             navigate('/home');
         }

@@ -7,15 +7,17 @@ import Details from './components/Details';
 import AdminDashboard from './components/AdminDashboard';
 import Home from './components/Home';
 
-function App() { 
+const host = 'https://attractive-rose-ray.cyclic.app';
 
+function App() { 
+  // const host = 'http://localhost:5000'
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Register />} />
-        <Route path='/upload' element={<Upload />} />
-        <Route path='/details' element={<Details />} />
-        <Route path='/admin' element={<AdminDashboard />} />
+        <Route path='/' element={<Register host={host} />} />
+        <Route path='/upload' element={<Upload host={host}/>} />
+        <Route path='/details' element={<Details host={host}/>} />
+        <Route path='/nayakadmin' element={<AdminDashboard host={host}/>} />
         <Route path='/home' element={<Home />} />
       </Routes>
     </Router>

@@ -4,7 +4,7 @@ import bgimage2 from '../assets/WEB-01.jpg';
 
 const Home = () => {
     const handleOpenGmail = () => {
-        window.open('mailto:your-email@gmail.com', '_blank');
+        window.open('mailto:events.ceat@gmail.com', '_blank');
     };
     
 
