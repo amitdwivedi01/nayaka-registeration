@@ -25,11 +25,9 @@ const register = async (req, res) => {
     // Check if the email is already used
     const existingUser = await User.findOne({ Gmail });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({
-          message: "Email already in use. Please log in with a new email.",
-        });
+      return res.status(400).json({
+        message: "Email already in use. Please log in with a new email.",
+      });
     }
 
     // Create a new user
@@ -67,16 +65,23 @@ const upload = async (req, res) => {
     user.Photo = personPhoto;
     user.docFront = docFront;
     user.docBack = docBack;
-    user.pan = pan;
-    user.passport = passport;
+    if (user.pan) {
+      user.pan = pan;
+    }
+    if (user.passport) {
+      user.passport = passport;
+    }
 
     // Save the updated user
     await user.save();
 
     mailService(
       user.Gmail,
-      "Data of documents",
-      `Your details is with us we will mailed you once done`
+      "Your details have been received",
+      `<p>Dear ${user.Name},</p>
+      <p>Thank you for sharing your details. Stay tuned for further updates about your journey.</p>
+      <p>See you soon!</p>
+      <p>Team Ceat</p>`
     );
     // Return a success message
     res.status(201).json({ message: "Documents uploaded successfully" });
@@ -88,9 +93,7 @@ const upload = async (req, res) => {
 
 const details = async (req, res) => {
   try {
-    console.log(req.body, "body");
     const {
-      id,
       firstName,
       middleName,
       lastName,
@@ -99,29 +102,37 @@ const details = async (req, res) => {
       pincode,
       city,
       state,
+      Gmail,
+      Number,
     } = req.body;
 
-    // Find the user by ID
-    const user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // Check if the email is already used
+    const existingUser = await User.findOne({ Gmail });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Email already in use. Please log in with a new email.",
+      });
     }
 
-    // Update the user with details
-    user.Name = firstName;
-    user.middleName = middleName;
-    user.lastName = lastName;
-    user.address = address;
-    user.landmark = landmark;
-    user.pincode = pincode;
-    user.city = city;
-    user.state = state;
+    const newUser = new User({
+      // Update the user with details
+      Name: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      address: address,
+      landmark: landmark,
+      pincode: pincode,
+      city: city,
+      state: state,
+      Gmail: Gmail,
+      Number: Number,
+    });
 
-    // Save the updated user
-    await user.save();
-
-    // Return a success message
-    res.status(201).json({ message: "Details uploaded successfully" });
+    // Save the new user to the database
+    const savedUser = await newUser.save();
+    console.log(savedUser, "newuser");
+    // Return the ID of the newly created user
+    res.status(201).json({ id: savedUser._id });
   } catch (err) {
     console.error("Error uploading details:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -144,36 +155,98 @@ const uploadDocuments = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    console.log(req.files.visa, "fdsfdfsdf");
     // Extract base64 data from the request
-    const visaBase64 = req.files.visa[0].buffer.toString("base64");
-    const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
+    if (req.files.visa[0] && req.files.visa[0]) {
+      const visaBase64 = req.files.visa[0].buffer.toString("base64");
+      const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
 
-    // Upload files to Cloudinary
-    const visaResult = await cloudinary.uploader.upload(
-      `data:${req.files.visa[0].mimetype};base64,${visaBase64}`,
-      { folder: "visa" }
-    );
-    const ticketResult = await cloudinary.uploader.upload(
-      `data:${req.files.ticket[0].mimetype};base64,${ticketBase64}`,
-      { folder: "ticket" }
-    );
+      // Upload files to Cloudinary
+      const visaResult = await cloudinary.uploader.upload(
+        `data:${req.files.visa[0].mimetype};base64,${visaBase64}`,
+        { folder: "visa" }
+      );
+      const ticketResult = await cloudinary.uploader.upload(
+        `data:${req.files.ticket[0].mimetype};base64,${ticketBase64}`,
+        { folder: "ticket" }
+      );
 
-    // Update user with visa and ticket URLs
-    user.visa = visaResult.secure_url;
-    user.ticket = ticketResult.secure_url;
-    console.log(visaResult.secure_url, "result");
+      // Update user with visa and ticket URLs
+      user.visa = visaResult.secure_url;
+      user.ticket = ticketResult.secure_url;
 
-    // Save the updated user
-    await user.save();
+      // Save the updated user
+      await user.save();
 
-    await mailService(
-      user.Gmail,
-      "Documents of data",
-      `here is your visa ticket ${user.visa}`
-    );
-    // Return success response
-    return res.status(200).json({ message: "Documents uploaded successfully" });
+      await mailService(
+        user.Gmail,
+        "Your ticket & visa for Vietnam have arrived!",
+        `<p>Dear ${user.Name},</p>
+          <p>Congratulations! Your (ticket) / (visa) / (ticket & visa) for Vietnam are ready. Please click on the link below to view & download.</p>
+          <p>ticktet: ${user.ticket}</p>
+          <p>visa: ${user.visa}</p>
+          <p>Please make sure you are able to display the required document at the airport.</p>
+          <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
+          <p>Get ready for an exciting journey.</p>
+          <p>See you soon!</p>
+          <p>Team Ceat</p>`
+      );
+      // Return success response
+      return res
+        .status(200)
+        .json({ message: "Documents uploaded successfully" });
+    } else if (req.files.visa[0]) {
+      const visaBase64 = req.files.visa[0].buffer.toString("base64");
+      // Upload files to Cloudinary
+      const visaResult = await cloudinary.uploader.upload(
+        `data:${req.files.visa[0].mimetype};base64,${visaBase64}`,
+        { folder: "visa" }
+      );
+      // Update user with visa and ticket URLs
+      user.visa = visaResult.secure_url;
+      // Save the updated user
+      await user.save();
+      await mailService(
+        user.Gmail,
+        "Your visa for Vietnam have arrived!",
+        `<p>Dear ${user.Name},</p>
+            <p>Congratulations! Your (ticket) / (visa) / (ticket & visa) for Vietnam are ready. Please click on the link below to view & download.</p>
+            <p>visa: ${user.visa}</p>
+            <p>Please make sure you are able to display the required document at the airport.</p>
+            <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
+            <p>Get ready for an exciting journey.</p>
+            <p>See you soon!</p>
+            <p>Team Ceat</p>`
+      );
+      // Return success response
+      return res
+        .status(200)
+        .json({ message: "Documents uploaded successfully" });
+    } else if (req.files.visa[0]) {
+      const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
+      const ticketResult = await cloudinary.uploader.upload(
+        `data:${req.files.ticket[0].mimetype};base64,${ticketBase64}`,
+        { folder: "ticket" }
+      );
+      user.ticket = ticketResult.secure_url;
+      // Save the updated user
+      await user.save();
+      await mailService(
+        user.Gmail,
+        "Your ticket for Vietnam have arrived!",
+        `<p>Dear ${user.Name},</p>
+            <p>Congratulations! Your (ticket) / (visa) / (ticket & visa) for Vietnam are ready. Please click on the link below to view & download.</p>
+            <p>ticktet: ${user.ticket}</p>
+            <p>Please make sure you are able to display the required document at the airport.</p>
+            <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
+            <p>Get ready for an exciting journey.</p>
+            <p>See you soon!</p>
+            <p>Team Ceat</p>`
+      );
+      // Return success response
+      return res
+        .status(200)
+        .json({ message: "Documents uploaded successfully" });
+    }
   } catch (error) {
     console.error("Error uploading documents:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -181,26 +254,25 @@ const uploadDocuments = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    try {
-        console.log(req.body,'body')
-      const { email } = req.body;  
-      // Check if the user exists in the database
-      // This is just a placeholder, you need to replace it with actual logic to check user existence
-      const userExists = await User.findOne({ Gmail:email });
-  
-      if (userExists) {
-        // User exists, send success response with status code 201
-        return res.status(201).json({ message: "User exists" }); 
-      } else {
-        // User does not exist, send error response with status code 404
-        return res.status(404).json({ message: "User not found" });
-      }
-    } catch (error) {
-      console.error("Error uploading documents:", error);
-      return res.status(500).json({ error: "Internal server error" });
+  try {
+    console.log(req.body, "body");
+    const { email } = req.body;
+    // Check if the user exists in the database
+    // This is just a placeholder, you need to replace it with actual logic to check user existence
+    const userExists = await User.findOne({ Gmail: email });
+
+    if (userExists) {
+      // User exists, send success response with status code 201
+      return res.status(201).json({ message: "User exists" });
+    } else {
+      // User does not exist, send error response with status code 404
+      return res.status(404).json({ message: "User not found" });
     }
-  };
-  
+  } catch (error) {
+    console.error("Error uploading documents:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 const mailService = async (to, subject, text) => {
   const transporter = nodemailer.createTransport({
