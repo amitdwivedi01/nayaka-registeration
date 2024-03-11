@@ -145,6 +145,7 @@ const AdminDashboard = ({host}) => {
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 id={selectedUserId}
+                host={host}
             />
         </div>
     );

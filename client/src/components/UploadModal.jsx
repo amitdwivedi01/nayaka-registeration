@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const UploadModal = ({ isOpen, onClose, id }) => {
+const UploadModal = ({ isOpen, onClose, id, host }) => {
     const [visaFile, setVisaFile] = useState(null);
     const [ticketFile, setTicketFile] = useState(null);
 
@@ -22,7 +22,7 @@ const UploadModal = ({ isOpen, onClose, id }) => {
 
             console.log(visaFile,ticketFile,'file')
 
-            const response = await axios.post('http://localhost:5000/uploaddoc', formData, {
+            const response = await axios.post(`${host}/uploaddoc`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

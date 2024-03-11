@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import bgimage from "../assets/WEB-02.jpg";
-import bgimage2 from "../assets/WEB-01.jpg";
+import bgimage2 from "../assets/830x1800-01.jpg";
 
 
 const Register = ({ host }) => {
@@ -59,6 +59,7 @@ const Register = ({ host }) => {
         navigate("/details");
       } else {
         setIsLoading(false);
+        alert("already registered, Please login");
         console.log("already registered");
       }
     } catch (error) {
@@ -72,9 +73,10 @@ const Register = ({ host }) => {
       className="flex justify-center items-center h-screen bg-cover"
       style={{
         backgroundImage: `url(${window.innerWidth > 768 ? bgimage : bgimage2})`,
+        backgroundSize: "100% 100%",
       }}
     >
-      <div className="bg-black bg-opacity-70 p-8 rounded-3xl w-[1/3] shadow-lg md:w-[600px] md:ml-auto md:mr-[35px] m-3 mt-[120px]">
+      <div className="bg-black bg-opacity-70 p-8 rounded-3xl w-[1/3] shadow-lg md:w-[600px] md:ml-auto md:mr-[35px] m-3 mt-[120px] md:mt-[0px]">
         <h2 className="text-2xl font-semibold mb-4 text-center text-white">
           Fill in the details to Register
         </h2>

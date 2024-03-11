@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import bgimage from "../assets/WEB-02.jpg";
-import bgimage2 from "../assets/WEB-01.jpg";
+import bgimage from '../assets/WEB1-01.jpg';
+import bgimage2 from "../assets/WEB-Page.jpg";
 import { useNavigate } from 'react-router-dom';
 
 const Upload = ({host}) => {
@@ -59,8 +59,9 @@ const Upload = ({host}) => {
         const personPhoto = await uploadToCloudinary(photo)
         const docFront = await uploadToCloudinary(frontImage)
         const docBack = await uploadToCloudinary(backImage)
-        const pancard = await uploadToCloudinary(Pan)
-        const passportdoc = await uploadToCloudinary(passport)
+        
+        const pancard = Pan ? await uploadToCloudinary(Pan) : '';        
+        const passportdoc = passport ? await uploadToCloudinary(passport) : '';
         
         const data = {
             id: id,
@@ -88,26 +89,28 @@ const Upload = ({host}) => {
       className="flex justify-center items-center h-screen bg-cover w-screen"
       style={{
         backgroundImage: `url(${window.innerWidth > 768 ? bgimage : bgimage2})`,
+        backgroundSize: "100% 100%",
       }}
     >
-      <div className="bg-black bg-opacity-70 p-8 rounded-3xl w-[1/3] shadow-lg md:w-[600px] md:ml-auto md:mr-[65px] m-3 mt-[120px]">
-        <h2 className="text-3xl font-semibold mb-4 text-center text-white">
-          Document Upload
+      <div className="bg-black bg-opacity-70 p-8 rounded-3xl w-[1/3] shadow-lg md:w-[600px] md:ml-auto md:mr-[65px] m-3 mt-[120px] md:mt-[0px]">
+        <h2 className="text-3xl mb-4 text-center Montserrat text-white">
+          Document Upload <span className="text-xl">(size limit: 1mb each)</span>
         </h2>
         <form className="space-y-4">
           <div>
-            <label htmlFor="photo" className="text-white font-semibold">
+            <label htmlFor="photo" className="text-white Montserrat">
               Recent Photo (passport size)
             </label>
             <input
               type="file"
               id="photo"
+              required
               className="w-full border-b-2 border-gray-300 p-2 focus:outline-none focus:border-indigo-500"
               onChange={(e) => handleFileChange(e, setPhoto)}
             />
           </div>
           <div>
-            <label htmlFor="frontImage" className="text-white font-semibold">
+            <label htmlFor="frontImage" className="text-white Montserrat">
               Aadhar Front
             </label>
             <input
@@ -119,7 +122,7 @@ const Upload = ({host}) => {
             />
           </div>
           <div>
-            <label htmlFor="backImage" className="text-white font-semibold">
+            <label htmlFor="backImage" className="text-white Montserrat">
               Aadhar Back
             </label>
             <input
@@ -131,7 +134,7 @@ const Upload = ({host}) => {
             />
           </div>
           <div>
-            <label htmlFor="pan" className="text-white font-semibold">
+            <label htmlFor="pan" className="text-white Montserrat">
               Pan Card
             </label>
             <input
@@ -142,7 +145,7 @@ const Upload = ({host}) => {
             />
           </div>
           <div>
-            <label htmlFor="passport" className="text-white font-semibold">
+            <label htmlFor="passport" className="text-white Montserrat">
               Passport
             </label>
             <input

@@ -156,7 +156,7 @@ const uploadDocuments = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     // Extract base64 data from the request
-    if (req.files.visa[0] && req.files.visa[0]) {
+    if (req.files.visa[0] && req.files.ticket[0]) {
       const visaBase64 = req.files.visa[0].buffer.toString("base64");
       const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
 
@@ -221,7 +221,7 @@ const uploadDocuments = async (req, res) => {
       return res
         .status(200)
         .json({ message: "Documents uploaded successfully" });
-    } else if (req.files.visa[0]) {
+    } else if (req.files.ticket[0]) {
       const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
       const ticketResult = await cloudinary.uploader.upload(
         `data:${req.files.ticket[0].mimetype};base64,${ticketBase64}`,

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import bgimage from "../assets/WEB-02.jpg";
-import bgimage2 from "../assets/WEB-01.jpg";
+import bgimage from '../assets/WEB1-01.jpg';
+import bgimage2 from "../assets/WEB-Page.jpg";
 
 const Details = ({ host }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    id: "",
     firstName: "",
     middleName: "",
     lastName: "",
@@ -16,6 +15,8 @@ const Details = ({ host }) => {
     pincode: "",
     city: "",
     state: "",
+    Gmail: "",
+    Number: "",
   });
 
   const navigate = useNavigate();
@@ -36,16 +37,14 @@ const Details = ({ host }) => {
   const handleSubmit = async (e) => {
     setIsLoading(true);
     e.preventDefault();
-    try {
-      const id = localStorage.getItem("id");
-      const updatedFormData = {
-        ...formData,
-        id: id,
-      };
-      const response = await axios.post(`${host}/details`, updatedFormData);
+    try {      
+      const response = await axios.post(`${host}/details`, formData);
       if (response.status === 201) {
+        localStorage.setItem("id", response.data.id);
         setIsLoading(false);
         navigate("/upload");
+      }else if(response.status === 400){
+        alert("This Email ID is already Registered, please use different Email ID!")
       }
     } catch (error) {
       setIsLoading(false);
@@ -58,13 +57,14 @@ const Details = ({ host }) => {
       className="flex justify-center items-center h-screen bg-cover"
       style={{
         backgroundImage: `url(${window.innerWidth > 768 ? bgimage : bgimage2})`,
+        backgroundSize: "100% 100%",
       }}
     >
-      <div className="bg-black bg-opacity-70 p-6 rounded-3xl w-[350px] shadow-lg md:w-[500px] md:ml-auto md:mr-[35px] mt-[130px]">
-        <h2 className="text-2xl font-semibold mb-4 text-center text-white">
-          Details
+      <div className="bg-black bg-opacity-70 p-6 rounded-3xl w-[350px] shadow-lg md:w-[500px] md:ml-auto md:mr-[35px] mt-[130px] md:mt-[0px]">
+        <h2 className="text-2xl mb-4 text-center Montserrat text-white">
+            Please fill in the details correctly
         </h2>
-        <form className="space-y-3" onSubmit={handleSubmit}>
+        <form className="space-y-2" onSubmit={handleSubmit}>
           <div>
             <input
               type="text"
@@ -95,6 +95,30 @@ const Details = ({ host }) => {
               name="lastName"
               required
               value={formData.lastName}
+              onChange={handleChange}
+              className="w-full border p-2 focus:outline-none focus:border-[#EC7003] bg-transparent text-white font-bold border-white"
+              style={{ caretColor: "white" }}
+            />
+          </div>
+          <div>
+            <input
+              type="email"
+              placeholder="Email ID"
+              name="Gmail"
+              required
+              value={formData.Gmail}
+              onChange={handleChange}
+              className="w-full border p-2 focus:outline-none focus:border-[#EC7003] bg-transparent text-white font-bold border-white"
+              style={{ caretColor: "white" }}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Phone no"
+              name="Number"
+              required
+              value={formData.Number}
               onChange={handleChange}
               className="w-full border p-2 focus:outline-none focus:border-[#EC7003] bg-transparent text-white font-bold border-white"
               style={{ caretColor: "white" }}
