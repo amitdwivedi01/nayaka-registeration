@@ -28,7 +28,12 @@ const UploadModal = ({ isOpen, onClose, id, host }) => {
                 }
             });
 
-            console.log('Documents uploaded successfully:', response.data);
+            if(response.status === 200){
+                alert('Documents uploaded successfully');
+                onClose()
+            }else{
+                alert("Error in uploading document, please try after sometime");
+            }
             // Add any additional logic here after successful upload
         } catch (error) {
             console.error('Error uploading documents:', error);

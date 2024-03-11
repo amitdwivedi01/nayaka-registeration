@@ -155,8 +155,10 @@ const uploadDocuments = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    console.log(req.files.visa, req.files.ticket)
     // Extract base64 data from the request
-    if (req.files.visa[0] && req.files.ticket[0]) {
+    if (req.files.visa  && req.files.ticket  && req.files.visa[0] && req.files.ticket[0]) {
       const visaBase64 = req.files.visa[0].buffer.toString("base64");
       const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
 

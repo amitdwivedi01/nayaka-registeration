@@ -106,9 +106,13 @@ const AdminDashboard = ({host}) => {
                         <th className="border border-gray-400 px-4 py-2">Name</th>
                         <th className="border border-gray-400 px-4 py-2">Email</th>
                         <th className="border border-gray-400 px-4 py-2">Number</th>
-                        <th className="border border-gray-400 px-4 py-2">Address</th>
                         <th className="border border-gray-400 px-4 py-2">City</th>
                         <th className="border border-gray-400 px-4 py-2">State</th>
+                        <th className="border border-gray-400 px-4 py-2">Photo</th>
+                        <th className="border border-gray-400 px-4 py-2">aadharfront</th>
+                        <th className="border border-gray-400 px-4 py-2">aadharback</th>
+                        <th className="border border-gray-400 px-4 py-2">pan</th>
+                        <th className="border border-gray-400 px-4 py-2">passport</th>                        
                         <th className="border border-gray-400 px-4 py-2">Ticket</th>
                         <th className="border border-gray-400 px-4 py-2">Visa</th>
                         <th className="border border-gray-400 px-4 py-2">Actions</th>
@@ -120,11 +124,15 @@ const AdminDashboard = ({host}) => {
                             <td className="border border-gray-400 px-4 py-2">{`${user.Name} ${user.middleName} ${user.lastName}`}</td>
                             <td className="border border-gray-400 px-4 py-2">{user.Gmail}</td>
                             <td className="border border-gray-400 px-4 py-2">{user.Number}</td>
-                            <td className="border border-gray-400 px-4 py-2">{user.address}</td>
                             <td className="border border-gray-400 px-4 py-2">{user.city}</td>
                             <td className="border border-gray-400 px-4 py-2">{user.state}</td>
-                            <td className="border border-gray-400 px-4 py-2">{user.ticket ? 'Uploaded':'Not uploaded'}</td>
-                            <td className="border border-gray-400 px-4 py-2">{user.visa ? 'Uploaded':'Not uploaded'}</td>
+                            <td className="border border-gray-400 px-4 py-2">{user.Photo ? 'A' :"NA"}</td>
+                            <td className="border border-gray-400 px-4 py-2">{user.docFront ? 'A': "NA"}</td>
+                            <td className="border border-gray-400 px-4 py-2">{user.docBack? "A": "NA"}</td>
+                            <td className="border border-gray-400 px-4 py-2">{user.pan ? "A" : "NA"}</td>
+                            <td className="border border-gray-400 px-4 py-2">{user.passport ? "A":"NA"}</td>
+                            <td className="border border-gray-400 px-4 py-2">{user.ticket ? 'A':'NA'}</td>
+                            <td className="border border-gray-400 px-4 py-2">{user.visa ? 'A':'NA'}</td>
                             <td className="border border-gray-400 px-4 py-2">
                                 <button onClick={() => openModal(user._id)} className="bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
                             </td>

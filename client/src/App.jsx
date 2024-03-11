@@ -7,8 +7,8 @@ import Details from './components/Details';
 import AdminDashboard from './components/AdminDashboard';
 import Home from './components/Home';
 
-const host = 'https://attractive-rose-ray.cyclic.app';
-// const host = 'http://localhost:5000'
+// const host = 'https://attractive-rose-ray.cyclic.app';
+const host = 'http://localhost:5000'
 
 function App() { 
   
