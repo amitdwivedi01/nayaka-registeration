@@ -183,7 +183,7 @@ const uploadDocuments = async (req, res) => {
         user.Gmail,
         "Your ticket & visa for Vietnam have arrived!",
         `<p>Dear ${user.Name},</p>
-          <p>Congratulations! Your (ticket) / (visa) / (ticket & visa) for Vietnam are ready. Please click on the link below to view & download.</p>
+          <p>Congratulations! Your ticket & visa for Vietnam are ready. Please click on the link below to view & download.</p>
           <p>ticktet: ${user.ticket}</p>
           <p>visa: ${user.visa}</p>
           <p>Please make sure you are able to display the required document at the airport.</p>
@@ -211,7 +211,7 @@ const uploadDocuments = async (req, res) => {
         user.Gmail,
         "Your visa for Vietnam have arrived!",
         `<p>Dear ${user.Name},</p>
-            <p>Congratulations! Your (ticket) / (visa) / (ticket & visa) for Vietnam are ready. Please click on the link below to view & download.</p>
+            <p>Congratulations! Your visa for Vietnam are ready. Please click on the link below to view & download.</p>
             <p>visa: ${user.visa}</p>
             <p>Please make sure you are able to display the required document at the airport.</p>
             <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
@@ -236,7 +236,7 @@ const uploadDocuments = async (req, res) => {
         user.Gmail,
         "Your ticket for Vietnam have arrived!",
         `<p>Dear ${user.Name},</p>
-            <p>Congratulations! Your (ticket) / (visa) / (ticket & visa) for Vietnam are ready. Please click on the link below to view & download.</p>
+            <p>Congratulations! Your ticket for Vietnam are ready. Please click on the link below to view & download.</p>
             <p>ticktet: ${user.ticket}</p>
             <p>Please make sure you are able to display the required document at the airport.</p>
             <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
