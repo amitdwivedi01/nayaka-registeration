@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
     state:String,
     pan:String,
     passport:String,
+    insurance:String,
 });
 
 const user = mongoose.model("user", userSchema);

@@ -109,7 +109,7 @@ const details = async (req, res) => {
     // Check if the email is already used
     const existingUser = await User.findOne({ Gmail });
     if (existingUser) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Email already in use. Please log in with a new email.",
       });
     }
@@ -156,11 +156,11 @@ const uploadDocuments = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log(req.files.visa, req.files.ticket)
     // Extract base64 data from the request
     if (req.files.visa  && req.files.ticket  && req.files.visa[0] && req.files.ticket[0]) {
       const visaBase64 = req.files.visa[0].buffer.toString("base64");
       const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
+      const insuranceBase64 = req.files.insurance[0].buffer.toString('base64')
 
       // Upload files to Cloudinary
       const visaResult = await cloudinary.uploader.upload(
@@ -171,10 +171,16 @@ const uploadDocuments = async (req, res) => {
         `data:${req.files.ticket[0].mimetype};base64,${ticketBase64}`,
         { folder: "ticket" }
       );
+      const insuranceResult = await cloudinary.uploader.upload(
+        `data:${req.files.insurance[0].mimetype};base64,${insuranceBase64}`,
+        { folder: "insurance" }
+      );
+
 
       // Update user with visa and ticket URLs
       user.visa = visaResult.secure_url;
       user.ticket = ticketResult.secure_url;
+      user.insurance= insuranceResult.secure_url;
 
       // Save the updated user
       await user.save();
@@ -186,8 +192,9 @@ const uploadDocuments = async (req, res) => {
           <p>Congratulations! Your ticket & visa for Vietnam are ready. Please click on the link below to view & download.</p>
           <p>ticktet: ${user.ticket}</p>
           <p>visa: ${user.visa}</p>
+          <p>visa: ${user.insurance}</p>
           <p>Please make sure you are able to display the required document at the airport.</p>
-          <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
+          <p>Go through the document carefully and in case you find any discrepancy, then please reply at the earliest.</p>
           <p>Get ready for an exciting journey.</p>
           <p>See you soon!</p>
           <p>Team Ceat</p>`
@@ -196,7 +203,7 @@ const uploadDocuments = async (req, res) => {
       return res
         .status(200)
         .json({ message: "Documents uploaded successfully" });
-    } else if (req.files.visa[0]) {
+    } else if (req.files.visa && req.files.visa[0]) {
       const visaBase64 = req.files.visa[0].buffer.toString("base64");
       // Upload files to Cloudinary
       const visaResult = await cloudinary.uploader.upload(
@@ -214,7 +221,7 @@ const uploadDocuments = async (req, res) => {
             <p>Congratulations! Your visa for Vietnam are ready. Please click on the link below to view & download.</p>
             <p>visa: ${user.visa}</p>
             <p>Please make sure you are able to display the required document at the airport.</p>
-            <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
+            <p>Go through the document carefully and in case you find any discrepancy, then please reply at the earliest.</p>
             <p>Get ready for an exciting journey.</p>
             <p>See you soon!</p>
             <p>Team Ceat</p>`
@@ -223,13 +230,21 @@ const uploadDocuments = async (req, res) => {
       return res
         .status(200)
         .json({ message: "Documents uploaded successfully" });
-    } else if (req.files.ticket[0]) {
+    } else if (req.files.ticket && req.files.ticket[0]) {
       const ticketBase64 = req.files.ticket[0].buffer.toString("base64");
+      const insuranceBase64 = req.files.ticket[0].buffer.toString("base64");
+
+
       const ticketResult = await cloudinary.uploader.upload(
         `data:${req.files.ticket[0].mimetype};base64,${ticketBase64}`,
         { folder: "ticket" }
       );
+      const insuranceResult = await cloudinary.uploader.upload(
+        `data:${req.files.ticket[0].mimetype};base64,${insuranceBase64}`,
+        { folder: "insurance" }
+      );
       user.ticket = ticketResult.secure_url;
+      user.insurance = insuranceResult.secure_url;
       // Save the updated user
       await user.save();
       await mailService(
@@ -238,8 +253,9 @@ const uploadDocuments = async (req, res) => {
         `<p>Dear ${user.Name},</p>
             <p>Congratulations! Your ticket for Vietnam are ready. Please click on the link below to view & download.</p>
             <p>ticktet: ${user.ticket}</p>
+            <p>visa: ${user.insurance}</p>
             <p>Please make sure you are able to display the required document at the airport.</p>
-            <p>Go through the document carefully and in case you find any discrepancy, then please mailed us a message at the earliest.</p>
+            <p>Go through the document carefully and in case you find any discrepancy, then please reply at the earliest.</p>
             <p>Get ready for an exciting journey.</p>
             <p>See you soon!</p>
             <p>Team Ceat</p>`

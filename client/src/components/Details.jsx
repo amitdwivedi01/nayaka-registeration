@@ -43,10 +43,18 @@ const Details = ({ host }) => {
         localStorage.setItem("id", response.data.id);
         setIsLoading(false);
         navigate("/upload");
-      }else if(response.status === 400){
+      }else if(response.status == 200){
+
         alert("This Email ID is already Registered, please use different Email ID!")
+        const newlogin = localStorage.getItem("login");
+        if(!newlogin){
+          navigate('/upload');
+        }else{
+        setIsLoading(false);
+        navigate("/home");
+        }
       }
-    } catch (error) {
+    }catch(error) {
       setIsLoading(false);
       console.error("Error submitting details:", error);
     }
@@ -114,7 +122,7 @@ const Details = ({ host }) => {
           </div>
           <div>
             <input
-              type="text"
+              type="number"
               placeholder="Phone no"
               name="Number"
               required
@@ -149,7 +157,7 @@ const Details = ({ host }) => {
           </div>
           <div>
             <input
-              type="text"
+              type="number"
               placeholder="Pincode"
               name="pincode"
               required

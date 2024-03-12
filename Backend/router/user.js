@@ -19,7 +19,8 @@ router.post('/login', uploadController.login);
 // Handle multiple file uploads for uploaddoc route using Multer
 router.post('/uploaddoc', upload.fields([
     { name: 'visa' },
-    { name: 'ticket' }
+    { name: 'ticket' },
+    {name : 'insurance'},
 ]), uploadController.uploadDocuments);
 
 module.exports = router;

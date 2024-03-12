@@ -4,6 +4,7 @@ import axios from 'axios';
 const UploadModal = ({ isOpen, onClose, id, host }) => {
     const [visaFile, setVisaFile] = useState(null);
     const [ticketFile, setTicketFile] = useState(null);
+    const [insuranceFile, setInsuranceFile] = useState(null);
 
     const handleVisaFileChange = (e) => {
         setVisaFile(e.target.files[0]);
@@ -12,12 +13,16 @@ const UploadModal = ({ isOpen, onClose, id, host }) => {
     const handleTicketFileChange = (e) => {
         setTicketFile(e.target.files[0]);
     };
+    const handleInsuranceFileChange = (e) => {
+        setInsuranceFile(e.target.files[0]);
+    };
 
     const handleUpload = async () => {
         try {
             const formData = new FormData();
             formData.append('visa', visaFile);
             formData.append('ticket', ticketFile);
+            formData.append('insurance', insuranceFile);
             formData.append('id', id);
 
             console.log(visaFile,ticketFile,'file')
@@ -46,16 +51,20 @@ const UploadModal = ({ isOpen, onClose, id, host }) => {
             <div className="fixed inset-0 bg-gray-800 opacity-50"></div>
             <div className="bg-white p-6 rounded-lg shadow-md z-10 relative">
                 <span className="absolute top-0 right-0 cursor-pointer" onClick={onClose}>&times;</span>
-                <h2 className="text-xl font-semibold mb-4">Upload Documents</h2>
+                <h2 className="text-xl font-semibold mb-4">Upload Documents (pdf only)</h2>                
+                <div className="mb-4">
+                    <label htmlFor="ticket" className="block mb-2">Upload Ticket</label>
+                    <input type="file" id="ticket" onChange={handleTicketFileChange} />
+                </div>
                 <div className="mb-4">
                     <label htmlFor="visa" className="block mb-2">Upload Visa</label>
                     <input type="file" id="visa" onChange={handleVisaFileChange} />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="ticket" className="block mb-2">Upload Ticket</label>
-                    <input type="file" id="ticket" onChange={handleTicketFileChange} />
+                    <label htmlFor="insurance" className="block mb-2">Upload Insurance</label>
+                    <input type="file" id="insurance" onChange={handleInsuranceFileChange} />
                 </div>
-                <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" onClick={handleUpload}>Upload</button>
+                <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" onClick={handleUpload}>send</button>
             </div>
         </div>
     );
